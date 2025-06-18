@@ -1,7 +1,9 @@
 import './style.css'
+import { createUI as createDragonUI, createListeners as createDragonListeners } from './dragons/dragon.component'
+import { mockWindowFetch } from './mocks/fetch'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    Hello Starter
-  </div>
-`
+mockWindowFetch()
+
+const dragonUI = createDragonUI()
+document.querySelector<HTMLDivElement>('#app')!.appendChild(dragonUI)
+createDragonListeners()
