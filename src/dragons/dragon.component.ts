@@ -1,5 +1,6 @@
 import { environment } from '../config/environment'
 import { LoggerService } from '../services/logger.service'
+import { DragonApiService } from './dragon.api.service'
 import { DragonTypes, dragonTypesToUIOptions, type Dragon } from './dragon.model'
 
 const INITIAL_AGE = 20
@@ -80,53 +81,41 @@ const createDragonDetail = (dragon: Dragon): HTMLElement => {
 
 const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
   try {
-    const createdResponse = await fetch('/api/dragons', {
-      method: 'POST',
-      body: dragonFormData
-    })
-
-    if (createdResponse.ok) {
-      const createdDragon: Dragon = await createdResponse.json()
-      LoggerService.debug('[CREATE DRAGON] Dragon created:', createdDragon)
-      if (environment.isAnalyticsEnabled) {
-        fetch('/api/analytics/dragons', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(createdDragon)
-        })
-      }
-      if (createdDragon.type === DragonTypes.GOLD) {
-        fetch('/api/sendEmailToBusinessMasterBoss', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            subject: `New Gold!! Dragon Created: ${createdDragon.name}`,
-            message: `Closer to be rich.`
-          })
-        })
-      } else if (createdDragon.type === DragonTypes.SILVER) {
-        fetch('/api/sendEmailToTeam', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            subject: `New Silver!! Dragon Created: ${createdDragon.name}`,
-            message: `Closer to the best bonus.`
-          })
-        })
-      }
-      LoggerService.debug('[CREATE DRAGON] All business tasks executed successfully')
-    } else {
-      LoggerService.error('[CREATE DRAGON] Failed to create dragon', dragonFormData)
-      return
+    const createdDragon: Dragon = await DragonApiService.createDragon(dragonFormData)
+    if (environment.isAnalyticsEnabled) {
+      fetch('/api/analytics/dragons', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(createdDragon)
+      })
     }
+    if (createdDragon.type === DragonTypes.GOLD) {
+      fetch('/api/sendEmailToBusinessMasterBoss', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          subject: `New Gold!! Dragon Created: ${createdDragon.name}`,
+          message: `Closer to be rich.`
+        })
+      })
+    } else if (createdDragon.type === DragonTypes.SILVER) {
+      fetch('/api/sendEmailToTeam', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          subject: `New Silver!! Dragon Created: ${createdDragon.name}`,
+          message: `Closer to the best bonus.`
+        })
+      })
+    }
+    LoggerService.debug('[CREATE DRAGON] All business tasks executed successfully')
   } catch (error) {
-    LoggerService.fatal('[CREATE DRAGON] Error connecting to the server:', error)
-    throw error
+    LoggerService.error('[CREATE DRAGON] Error creating the dragon:', error)
   }
 }
