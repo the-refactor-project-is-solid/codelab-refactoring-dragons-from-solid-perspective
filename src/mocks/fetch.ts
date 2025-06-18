@@ -4,6 +4,10 @@ export const mockWindowFetch = (): void => {
       return createDragonResponseOk(init?.body as FormData)
     }
 
+    if (typeof input === 'string' && input.startsWith('/api/analytics')) {
+      return createAnalyticsResponseOk()
+    }
+
     // DEFAULT
     return new Response(null, { status: 404 })
   }
@@ -20,4 +24,8 @@ const createDragonResponseOk = (dragonBody: FormData): Response => {
     }),
     { status: 200, headers: { 'Content-Type': 'application/json' } }
   )
+}
+
+const createAnalyticsResponseOk = (): Response => {
+  return new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } })
 }

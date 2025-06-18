@@ -1,4 +1,4 @@
-import { environment } from '../config/environment'
+import { AnalyticsService } from '../services/analytics.service'
 import { LoggerService } from '../services/logger.service'
 import { DragonApiService } from './dragon.api.service'
 import { DragonTypes, dragonTypesToUIOptions, type Dragon } from './dragon.model'
@@ -82,15 +82,7 @@ const createDragonDetail = (dragon: Dragon): HTMLElement => {
 const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
   try {
     const createdDragon: Dragon = await DragonApiService.createDragon(dragonFormData)
-    if (environment.isAnalyticsEnabled) {
-      fetch('/api/analytics/dragons', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(createdDragon)
-      })
-    }
+    AnalyticsService.trackEvent('dragon_created', createdDragon)
     if (createdDragon.type === DragonTypes.GOLD) {
       fetch('/api/sendEmailToBusinessMasterBoss', {
         method: 'POST',
