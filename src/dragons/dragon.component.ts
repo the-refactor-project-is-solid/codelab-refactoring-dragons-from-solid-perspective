@@ -1,5 +1,6 @@
 import { AnalyticsService } from '../services/analytics.service'
 import { LoggerService } from '../services/logger.service'
+import { NotificationService } from '../services/notification.service'
 import { DragonApiService } from './dragon.api.service'
 import { DragonTypes, dragonTypesToUIOptions, type Dragon } from './dragon.model'
 
@@ -84,27 +85,12 @@ const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
     const createdDragon: Dragon = await DragonApiService.createDragon(dragonFormData)
     AnalyticsService.trackEvent('dragon_created', createdDragon)
     if (createdDragon.type === DragonTypes.GOLD) {
-      fetch('/api/sendEmailToBusinessMasterBoss', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          subject: `New Gold!! Dragon Created: ${createdDragon.name}`,
-          message: `Closer to be rich.`
-        })
-      })
+      NotificationService.notifyBusinessMasterBoss(
+        `New Gold!! Dragon Created: ${createdDragon.name}`,
+        `Closer to be rich.`
+      )
     } else if (createdDragon.type === DragonTypes.SILVER) {
-      fetch('/api/sendEmailToTeam', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          subject: `New Silver!! Dragon Created: ${createdDragon.name}`,
-          message: `Closer to the best bonus.`
-        })
-      })
+      NotificationService.notifyTeam(`New Silver!! Dragon Created: ${createdDragon.name}`, `Closer to the best bonus.`)
     }
     LoggerService.debug('[CREATE DRAGON] All business tasks executed successfully')
   } catch (error) {

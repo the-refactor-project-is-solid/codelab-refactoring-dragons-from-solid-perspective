@@ -5,7 +5,11 @@ export const mockWindowFetch = (): void => {
     }
 
     if (typeof input === 'string' && input.startsWith('/api/analytics')) {
-      return createAnalyticsResponseOk()
+      return createGenericResponseOk()
+    }
+
+    if (typeof input === 'string' && input.startsWith('/api/sendEmailTo')) {
+      return createGenericResponseOk()
     }
 
     // DEFAULT
@@ -26,6 +30,6 @@ const createDragonResponseOk = (dragonBody: FormData): Response => {
   )
 }
 
-const createAnalyticsResponseOk = (): Response => {
+const createGenericResponseOk = (): Response => {
   return new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } })
 }
