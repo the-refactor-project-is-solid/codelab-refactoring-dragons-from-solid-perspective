@@ -1,5 +1,7 @@
+import type { LogLevel } from '../services/logger.service'
+
 export const environment = {
-  showLog: true,
+  logLevel: 'DEBUG' as LogLevel,
   isAnalyticsEnabled: true
 } as const
 

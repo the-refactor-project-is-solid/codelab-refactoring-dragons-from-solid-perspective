@@ -1,4 +1,5 @@
 import { environment } from '../config/environment'
+import { LoggerService } from '../services/logger.service'
 import { DragonTypes, dragonTypesToUIOptions, type Dragon } from './dragon.model'
 
 const INITIAL_AGE = 20
@@ -86,9 +87,7 @@ const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
 
     if (createdResponse.ok) {
       const createdDragon: Dragon = await createdResponse.json()
-      if (environment.showLog) {
-        console.log('[LOGGER] [CREATE DRAGON] [DEBUG] Dragon created:', createdDragon)
-      }
+      LoggerService.debug('[CREATE DRAGON] Dragon created:', createdDragon)
       if (environment.isAnalyticsEnabled) {
         fetch('/api/analytics/dragons', {
           method: 'POST',
@@ -121,19 +120,13 @@ const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
           })
         })
       }
-      if (environment.showLog) {
-        console.log('[LOGGER] [CREATE DRAGON] [DEBUG] All business tasks executed successfully')
-      }
+      LoggerService.debug('[CREATE DRAGON] All business tasks executed successfully')
     } else {
-      if (environment.showLog) {
-        console.error('[LOGGER] [CREATE DRAGON] [ERROR] Failed to create dragon', dragonFormData)
-      }
+      LoggerService.error('[CREATE DRAGON] Failed to create dragon', dragonFormData)
       return
     }
   } catch (error) {
-    if (environment.showLog) {
-      console.error('[LOGGER] [CREATE DRAGON] [ERROR] Error connecting to the server:', error)
-    }
+    LoggerService.fatal('[CREATE DRAGON] Error connecting to the server:', error)
     throw error
   }
 }

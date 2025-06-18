@@ -5,7 +5,7 @@ export const DragonTypes = {
   SILVER: 'SILVER'
 } as const
 
-export type DragonType = (typeof DragonTypes)[keyof typeof DragonTypes]
+export type DragonType = keyof typeof DragonTypes
 
 export type Dragon = {
   id?: string
