@@ -1,8 +1,8 @@
 import { AnalyticsService } from '../services/analytics.service'
 import { LoggerService } from '../services/logger.service'
-import { NotificationService } from '../services/notification.service'
+import { OperationTeamBusinessService } from '../services/operation-team.service'
 import { DragonApiService } from './dragon.api.service'
-import { DragonTypes, dragonTypesToUIOptions, type Dragon } from './dragon.model'
+import { dragonTypesToUIOptions, type Dragon } from './dragon.model'
 
 const INITIAL_AGE = 20
 
@@ -84,14 +84,7 @@ const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
   try {
     const createdDragon: Dragon = await DragonApiService.createDragon(dragonFormData)
     AnalyticsService.trackEvent('dragon_created', createdDragon)
-    if (createdDragon.type === DragonTypes.GOLD) {
-      NotificationService.notifyBusinessMasterBoss(
-        `New Gold!! Dragon Created: ${createdDragon.name}`,
-        `Closer to be rich.`
-      )
-    } else if (createdDragon.type === DragonTypes.SILVER) {
-      NotificationService.notifyTeam(`New Silver!! Dragon Created: ${createdDragon.name}`, `Closer to the best bonus.`)
-    }
+    OperationTeamBusinessService.notifyAfterDragonCreation(createdDragon)
     LoggerService.debug('[CREATE DRAGON] All business tasks executed successfully')
   } catch (error) {
     LoggerService.error('[CREATE DRAGON] Error creating the dragon:', error)
