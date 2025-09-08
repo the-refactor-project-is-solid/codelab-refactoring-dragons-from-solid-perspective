@@ -1,6 +1,5 @@
-import { AnalyticsService } from '../services/analytics.service'
+import { EventManager, EventTypes } from '../events/event-manager'
 import { LoggerService } from '../services/logger.service'
-import { OperationTeamBusinessService } from '../services/operation-team.service'
 import { DragonApiService } from './dragon.api.service'
 import { dragonTypesToUIOptions, type Dragon } from './dragon.model'
 
@@ -83,8 +82,7 @@ const createDragonDetail = (dragon: Dragon): HTMLElement => {
 const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
   try {
     const createdDragon: Dragon = await DragonApiService.createDragon(dragonFormData)
-    AnalyticsService.trackEvent('dragon_created', createdDragon)
-    OperationTeamBusinessService.notifyAfterDragonCreation(createdDragon)
+    EventManager.publish(EventTypes.DRAGON_CREATED, createdDragon)
     LoggerService.debug('[CREATE DRAGON] All business tasks executed successfully')
   } catch (error) {
     LoggerService.error('[CREATE DRAGON] Error creating the dragon:', error)
