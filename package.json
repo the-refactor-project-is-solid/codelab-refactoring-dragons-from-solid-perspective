@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest --watch --coverage"
   },
   "devDependencies": {
     "@eslint/css": "^0.9.0",
