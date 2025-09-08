@@ -2,24 +2,25 @@ import { LoggerService } from '../services/logger.service'
 import type { Dragon } from './dragon.model'
 
 export class DragonApiService {
-  private static readonly API_URL = '/api/dragons'
+  private static readonly dragonsStore = new Map<string, Dragon>()
 
   static async createDragon(dragonFormData: FormData): Promise<Dragon> {
-    try {
-      const response = await fetch(this.API_URL, {
-        method: 'POST',
-        body: dragonFormData
-      })
+    const dragon = Object.fromEntries(dragonFormData.entries()) as unknown as Dragon
+    dragon.age = Number(dragon.age)
+    dragon.id = (this.dragonsStore.size + 1).toString()
+    this.dragonsStore.set(dragon.id, dragon)
+    return Promise.resolve(dragon)
+  }
 
-      if (!response.ok) {
-        throw new Error(`Error creating dragon: ${response.statusText}`)
-      }
-      const createdDragon: Dragon = await response.json()
-      LoggerService.debug('[CREATE DRAGON] Dragon created:', createdDragon)
-      return createdDragon
-    } catch (error) {
-      LoggerService.fatal('[CREATE DRAGON] Error connecting to the server:', error)
-      throw error
+  static async findDragonById(id: string): Promise<Dragon> {
+    const dragon = this.dragonsStore.get(id)
+    if (!dragon) {
+      LoggerService.debug(
+        `[DRAGON API SERVICE] [FIND BY ID] dragon ${id} not found. current store size: ${this.dragonsStore.size}`
+      )
+      return Promise.reject('404 dragon not found')
     }
+
+    return Promise.resolve(dragon)
   }
 }
