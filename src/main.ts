@@ -7,6 +7,12 @@ import { AnalyticsService } from './services/analytics.service'
 import { OperationTeamBusinessService } from './services/operation-team.service'
 import { DragonTypes, type Dragon } from './dragons/dragon.model'
 import { NotificationService } from './services/notification.service'
+import { initProviders } from './services/dependency-injector/injector.service'
+import { MemoryDragonRepository } from './dragons/repositories/memory-dragon.repository'
+
+initProviders({
+  dragonRepository: new MemoryDragonRepository()
+})
 
 mockWindowFetch()
 

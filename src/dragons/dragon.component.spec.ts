@@ -1,6 +1,7 @@
-import { DragonApiService } from './dragon.api.service'
+import { initProviders } from '../services/dependency-injector/injector.service'
 import { createListeners, createUI } from './dragon.component'
 import { DragonTypes, type Dragon } from './dragon.model'
+import { MemoryDragonRepository } from './repositories/memory-dragon.repository'
 
 const renderTestDragon = (dragon?: Dragon) => {
   const element = createUI(dragon)
@@ -25,16 +26,19 @@ describe('Given a Dragon Component,', () => {
   })
 
   describe('When applying listeners', () => {
+    const dragonRepository = new MemoryDragonRepository()
+
     beforeEach(() => {
+      initProviders({ dragonRepository })
       renderTestDragon()
       createListeners()
     })
 
     afterEach(async () => {
-      await DragonApiService.deleteAll()
+      await dragonRepository.deleteAll()
     })
 
-    xit('should create a dragon', async () => {
+    it('should create a dragon', async () => {
       const form = document.querySelector<HTMLFormElement>('#dragon-form')!
       const nameInput = form.querySelector<HTMLInputElement>("input[name='name']")!
       const typeInput = form.querySelector<HTMLInputElement>("select[name='type']")!
@@ -46,7 +50,7 @@ describe('Given a Dragon Component,', () => {
 
       form.dispatchEvent(new Event('submit', { bubbles: true }))
 
-      const createdDragon = await DragonApiService.findDragonById('1')
+      const createdDragon = await dragonRepository.findDragonById('1')
       expect(createdDragon).toEqual(dragonMock)
     })
   })

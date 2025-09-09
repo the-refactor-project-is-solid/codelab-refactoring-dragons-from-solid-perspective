@@ -1,7 +1,7 @@
 import { EventManager, EventTypes } from '../events/event-manager'
+import { inject } from '../services/dependency-injector/injector.service'
 import { LoggerService } from '../services/logger.service'
-import { DragonApiService } from './dragon.api.service'
-import { dragonTypesToUIOptions, type Dragon } from './dragon.model'
+import { type DragonRepository, dragonTypesToUIOptions, type Dragon } from './dragon.model'
 
 const INITIAL_AGE = 20
 
@@ -81,7 +81,7 @@ const createDragonDetail = (dragon: Dragon): HTMLElement => {
 
 const createDragonToAPI = async (dragonFormData: FormData): Promise<void> => {
   try {
-    const createdDragon: Dragon = await DragonApiService.createDragon(dragonFormData)
+    const createdDragon: Dragon = await inject<DragonRepository>('dragonRepository').createDragon(dragonFormData)
     EventManager.publish(EventTypes.DRAGON_CREATED, createdDragon)
     LoggerService.debug('[CREATE DRAGON] All business tasks executed successfully')
   } catch (error) {

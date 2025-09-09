@@ -5,6 +5,11 @@ export const DragonTypes = {
   SILVER: 'SILVER'
 } as const
 
+export interface DragonRepository {
+  createDragon(dragonFormData: FormData): Promise<Dragon>
+  findDragonById(id: string): Promise<Dragon>
+}
+
 export type DragonType = keyof typeof DragonTypes
 
 export type Dragon = {
