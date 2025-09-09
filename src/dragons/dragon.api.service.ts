@@ -23,4 +23,9 @@ export class DragonApiService {
 
     return Promise.resolve(dragon)
   }
+
+  static async deleteAll(): Promise<void> {
+    this.dragonsStore.clear()
+    return Promise.resolve()
+  }
 }

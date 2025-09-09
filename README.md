@@ -30,6 +30,37 @@ In order to start contributing to the project, Once you have your environment se
 
 3. Start the application in development mode
 
-    > npm start
+    > npm run dev
+
+    _This command starts an HTTP server and outputs its access URL for the browser_
 
 4. 👩🏻‍💻 Develop your code and happy coding 👨🏽‍💻!
+
+## Project structure
+
+```plain
+
+├── docs/                    # Folder to save the repo documentation (diagrams, etc)
+├── public/                  # Global root folder of web app on server.
+│
+├── src/
+│   ├── config/              # General app configuracion, environment as example
+│   ├── dragons/             # Dragons domain folder, all dragon logic is inside
+│   ├── events/              # Event manager for comunication beetwen components
+│   ├── mocks/               # Testing elements
+│   ├── services/            # Business logic and application services
+│   ├── main.ts              # Entry point of the application
+│   └── style.css            # Main styles of app
+│
+├── index.html               # Main HTML page for web app
+├── .editorconfig            # Editor configuration for consistent coding styles
+├── .gitignore               # Specifies files and directories to be ignored by Git
+├── .prettierrc              # Prettier configuration for code formatting
+├── eslint.config.js         # ESLint configuration for static code analysis
+├── jest.config.js           # Jest configuration for unit testing
+├── package.json             # Project dependencies and scripts
+├── package-lock.json        # Exact versions of installed dependencies
+├── tsconfig.json            # TypeScript configuration
+├── LICENSE                  # The project license, currently Apache 2.0
+└── README.md                # Project documentation entry point (this file)
+```
